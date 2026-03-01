@@ -110,24 +110,12 @@ export default function HomeScreen({ lang, setLang, onBack, isCitizen }) {
                         {lang === 'hi' ? 'सेवा चुनें' : lang === 'pa' ? 'ਸੇਵਾ ਚੁਣੋ' : 'Select a Service'}
                     </h1>
                     <p className="text-white/60 text-sm">
-                        {isCitizen
-                            ? (lang === 'hi' ? '🔐 नागरिक मोड — सभी सेवाएं उपलब्ध' : '🔐 Citizen Mode — All services available')
-                            : (lang === 'hi' ? '👤 अतिथि मोड — सीमित सेवाएं' : '👤 Guest Mode — Limited services')}
+                        {voiceMode
+                            ? (lang === 'hi' ? 'बोलें या नीचे से चुनें' : 'Speak or tap below')
+                            : (lang === 'hi' ? 'नीचे से सेवा चुनें' : 'Tap below to choose')}
                     </p>
                 </div>
             </div>
-
-            {/* Mode banner */}
-            {!isCitizen && (
-                <div className="w-full max-w-3xl flex items-center gap-3 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-2.5">
-                    <span className="text-amber-400 text-lg" aria-hidden="true">🔒</span>
-                    <p className="text-amber-300 text-sm font-medium flex-1">
-                        {lang === 'hi'
-                            ? 'कुछ सेवाएं सिर्फ नागरिक लॉगिन के बाद उपलब्ध हैं।'
-                            : 'Some services require Citizen login for security.'}
-                    </p>
-                </div>
-            )}
 
             {/* Voice mode indicator */}
             {voiceMode && isActive && (
@@ -177,10 +165,10 @@ export default function HomeScreen({ lang, setLang, onBack, isCitizen }) {
                                             </span>
                                             {/* Action badge */}
                                             <span className={`text-[7px] font-bold px-1.5 py-0.5 rounded-full ${svc.action === 'Instant Receipt' || svc.action === 'Instant'
-                                                    ? 'bg-green-500/20 text-green-400'
-                                                    : svc.action === 'Ticket Issued' || svc.action === 'Logged'
-                                                        ? 'bg-blue-500/20 text-blue-400'
-                                                        : 'bg-amber-500/20 text-amber-400'
+                                                ? 'bg-green-500/20 text-green-400'
+                                                : svc.action === 'Ticket Issued' || svc.action === 'Logged'
+                                                    ? 'bg-blue-500/20 text-blue-400'
+                                                    : 'bg-amber-500/20 text-amber-400'
                                                 }`} aria-hidden="true">
                                                 {svc.action === 'Instant Receipt' ? '✅ Receipt' : svc.action === 'Instant' ? '✅' : svc.action === 'Ticket Issued' ? '📋 Ticket' : svc.action === 'Logged' ? '📋' : svc.action === 'Physical Print' ? '🖨️ Print' : '📝 Filed'}
                                             </span>
