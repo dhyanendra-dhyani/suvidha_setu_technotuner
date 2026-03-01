@@ -247,7 +247,7 @@ function AppContent() {
                     <Route path="/" element={
                       screen === 'citizen-dashboard'
                         ? <CitizenDashboard lang={lang} citizen={citizen} onLogout={() => { setCitizen(null); setScreen('gateway'); setPendingIntent(null); }} isOnline={isOnline} pendingIntent={pendingIntent} clearPendingIntent={() => setPendingIntent(null)} />
-                        : <HomeScreen lang={lang} setLang={setLang} onBack={() => setScreen('gateway')} />
+                        : <HomeScreen lang={lang} setLang={setLang} onBack={() => setScreen('gateway')} isCitizen={!!citizen} />
                     } />
                     <Route path="/bill/:serviceType" element={<BillPayment lang={lang} isOnline={isOnline} />} />
                     <Route path="/complaint" element={<ComplaintForm lang={lang} isOnline={isOnline} />} />
