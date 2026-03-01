@@ -97,7 +97,7 @@ export default function HomeScreen({ lang, setLang, onBack }) {
                     <h1 className="text-2xl md:text-3xl font-black text-white">
                         {lang === 'hi' ? 'सेवा चुनें' : lang === 'pa' ? 'ਸੇਵਾ ਚੁਣੋ' : 'Select a Service'}
                     </h1>
-                    <p className="text-white/40 text-sm">
+                    <p className="text-white/60 text-sm">
                         {voiceMode
                             ? (lang === 'hi' ? 'बोलें या नीचे से चुनें' : 'Speak or tap below')
                             : (lang === 'hi' ? 'नीचे से सेवा चुनें' : 'Tap below to choose')}
@@ -122,32 +122,37 @@ export default function HomeScreen({ lang, setLang, onBack }) {
                     return (
                         <div key={cat.key}
                             className="rounded-2xl border overflow-hidden transition-all fast-scale-in"
+                            role="region"
+                            aria-label={lang === 'hi' ? cat.labelHi : cat.label}
                             style={{
                                 background: cat.gradient,
                                 borderColor: isExpanded ? cat.border : 'rgba(255,255,255,0.05)',
                                 animationDelay: `${ci * 0.08}s`,
                             }}>
                             <button onClick={() => setExpandedCat(expandedCat === cat.key ? null : cat.key)}
-                                className="w-full flex items-center gap-3 px-5 py-4 cursor-pointer text-left">
-                                <span className="text-2xl">{cat.icon}</span>
+                                className="w-full flex items-center gap-3 px-5 py-4 cursor-pointer text-left"
+                                aria-expanded={isExpanded}
+                                aria-controls={`panel-${cat.key}`}>
+                                <span className="text-2xl" aria-hidden="true">{cat.icon}</span>
                                 <div className="flex-1">
                                     <p className="text-white font-bold text-base">{lang === 'hi' ? cat.labelHi : cat.label}</p>
-                                    <p className="text-white/30 text-xs">{cat.services.length} services</p>
+                                    <p className="text-white/60 text-xs">{cat.services.length} {lang === 'hi' ? 'सेवाएं' : 'services'}</p>
                                 </div>
-                                <span className={`text-white/30 text-lg transition-transform ${isExpanded ? 'rotate-180' : ''}`}>▾</span>
+                                <span className={`text-white/60 text-lg transition-transform ${isExpanded ? 'rotate-180' : ''}`} aria-hidden="true">▾</span>
                             </button>
                             {isExpanded && (
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 px-4 pb-4">
+                                <div id={`panel-${cat.key}`} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 px-4 pb-4" role="group" aria-label={`${lang === 'hi' ? cat.labelHi : cat.label} services`}>
                                     {cat.services.map((svc, si) => (
                                         <button key={svc.key} onClick={() => navigate(svc.route)}
-                                            className="group rounded-xl p-3 cursor-pointer border border-transparent hover:border-white/10 flex flex-col items-center gap-2 transition-all hover:bg-white/5 active:scale-95 fast-scale-in relative"
-                                            style={{ animationDelay: `${(ci * 0.08) + (si * 0.04)}s` }}>
-                                            <span className="text-2xl group-hover:scale-110 transition-transform">{svc.icon}</span>
+                                            className="group rounded-xl p-3 cursor-pointer border border-transparent hover:border-white/10 flex flex-col items-center gap-2 transition-all hover:bg-white/5 active:scale-95 fast-scale-in relative a11y-touch"
+                                            style={{ animationDelay: `${(ci * 0.08) + (si * 0.04)}s` }}
+                                            aria-label={`${lang === 'hi' ? svc.labelHi : svc.label} (${svc.mode === 'citizen' ? 'Citizen login required' : 'Guest access'})`}>
+                                            <span className="text-2xl group-hover:scale-110 transition-transform" aria-hidden="true">{svc.icon}</span>
                                             <span className="text-white/80 text-xs font-medium text-center leading-tight">
                                                 {lang === 'hi' ? svc.labelHi : svc.label}
                                             </span>
                                             {/* Guest/Citizen badge */}
-                                            <span className={`absolute top-1 right-1 text-[8px] font-bold px-1.5 py-0.5 rounded-full ${svc.mode === 'citizen' ? 'bg-amber-500/20 text-amber-400' : 'bg-green-500/20 text-green-400'}`}>
+                                            <span className={`absolute top-1 right-1 text-[8px] font-bold px-1.5 py-0.5 rounded-full ${svc.mode === 'citizen' ? 'bg-amber-500/20 text-amber-400' : 'bg-green-500/20 text-green-400'}`} aria-hidden="true">
                                                 {svc.mode === 'citizen' ? '🔐' : '👤'}
                                             </span>
                                         </button>

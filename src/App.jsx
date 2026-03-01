@@ -48,6 +48,12 @@ function AppContent() {
   const [lang, setLang] = useState('en');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [citizen, setCitizen] = useState(null);
+
+  // WCAG 3.1.1 — Sync lang attribute with selected language
+  useEffect(() => {
+    const langMap = { en: 'en', hi: 'hi', pa: 'pa' };
+    document.documentElement.lang = langMap[lang] || 'en';
+  }, [lang]);
   const [voiceMode, setVoiceMode] = useState(false);
   const [blindMode, setBlindMode] = useState(false);
   const [showDevPanel, setShowDevPanel] = useState(false);
@@ -180,27 +186,32 @@ function AppContent() {
 
             {showPersistent && (
               <>
-                <header className="header-bar no-print sticky top-0 z-40" style={{ top: screen !== 'idle' ? '24px' : 0 }}>
+                {/* WCAG 2.4.1 — Skip Navigation */}
+                <a href="#main-content" className="skip-to-main">
+                  {lang === 'hi' ? 'मुख्य सामग्री पर जाएं' : 'Skip to main content'}
+                </a>
+
+                <header className="header-bar no-print sticky top-0 z-40" style={{ top: screen !== 'idle' ? '24px' : 0 }} role="banner" aria-label="SUVIDHA Setu Header">
                   <div className="flex h-1">
                     <div className="flex-1" style={{ background: '#FF9933' }} />
                     <div className="flex-1" style={{ background: '#FFFFFF' }} />
                     <div className="flex-1" style={{ background: '#138808' }} />
                   </div>
                   <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
-                    <button onClick={goHome} className="flex items-center gap-3 cursor-pointer bg-transparent border-0 p-0">
+                    <button onClick={goHome} className="flex items-center gap-3 cursor-pointer bg-transparent border-0 p-0" aria-label={lang === 'hi' ? 'होम पेज पर जाएं' : 'Go to home page'}>
                       <div className="w-9 h-9 gradient-primary rounded-xl flex items-center justify-center">
-                        <span className="text-white text-base font-black">S</span>
+                        <span className="text-white text-base font-black" aria-hidden="true">S</span>
                       </div>
                       <div className="hidden md:block">
                         <h1 className="text-base font-black text-white leading-tight">{t(lang, 'appName')}</h1>
-                        <p className="text-xs text-white/40">{t(lang, 'tagline')}</p>
+                        <p className="text-xs text-white/60">{t(lang, 'tagline')}</p>
                       </div>
                     </button>
                     <div className="flex items-center gap-2">
                       <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${screen === 'citizen-dashboard'
                         ? 'bg-green-500/15 text-green-400 border border-green-500/20'
                         : 'bg-blue-500/15 text-blue-400 border border-blue-500/20'
-                        }`}>
+                        }`} role="status" aria-live="polite">
                         {screen === 'citizen-dashboard' ? '🏛️ Citizen' : '⚡ Guest'}
                       </span>
                       {blindMode && (
@@ -210,13 +221,15 @@ function AppContent() {
                       )}
                       <button
                         onClick={() => { setBlindMode(b => !b); if (!voiceMode) { setVoiceMode(true); } }}
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer border text-sm transition-all ${blindMode
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer border text-sm transition-all a11y-touch ${blindMode
                           ? 'bg-amber-500/20 border-amber-500/40 text-amber-400'
                           : 'bg-white/5 border-white/10 text-white/40 hover:text-white/70'
                           }`}
-                        title={blindMode ? 'Disable accessibility mode' : 'Enable accessibility mode (for visually impaired)'}
+                        aria-label={blindMode ? (lang === 'hi' ? 'पहुँच मोड बंद करें' : 'Disable accessibility mode') : (lang === 'hi' ? 'पहुँच मोड चालू करें' : 'Enable accessibility mode')}
+                        aria-pressed={blindMode}
                       >♿</button>
                       <select value={lang} onChange={e => setLang(e.target.value)}
+                        aria-label={lang === 'hi' ? 'भाषा चुनें' : 'Select language'}
                         className="px-2 py-1 bg-white/5 border border-white/10 rounded-lg text-white text-sm cursor-pointer focus:outline-none">
                         <option value="en" className="bg-gray-900">EN</option>
                         <option value="hi" className="bg-gray-900">हिं</option>
@@ -229,7 +242,7 @@ function AppContent() {
                   </div>
                 </header>
 
-                <main className="flex-1">
+                <main id="main-content" className="flex-1" role="main" aria-label={lang === 'hi' ? 'मुख्य सामग्री' : 'Main content'}>
                   <Routes location={location}>
                     <Route path="/" element={
                       screen === 'citizen-dashboard'
@@ -254,8 +267,8 @@ function AppContent() {
                   </Routes>
                 </main>
 
-                <footer className="border-t border-white/5 py-2 text-center no-print">
-                  <p className="text-white/20 text-xs">C-DAC SUVIDHA 2026 • {t(lang, 'poweredBy')} • v4.0</p>
+                <footer className="border-t border-white/5 py-2 text-center no-print" role="contentinfo">
+                  <p className="text-white/60 text-xs">C-DAC SUVIDHA 2026 • {t(lang, 'poweredBy')} • v4.0</p>
                 </footer>
               </>
             )}

@@ -85,16 +85,17 @@ export default function CitizenDashboard({ lang, citizen, onLogout, isOnline, pe
                         {initials}
                     </div>
                     <div>
-                        <p className="text-white/50 text-sm">
+                        <p className="text-white/60 text-sm">
                             {lang === 'hi' ? 'स्वागत है,' : lang === 'pa' ? 'ਜੀ ਆਇਆਂ ਨੂੰ,' : 'Welcome,'}
                         </p>
                         <h2 className="text-2xl font-bold text-white">{citizen?.name || 'Vivek Kumar'}</h2>
-                        <p className="text-white/30 text-xs font-mono">{citizen?.aadhaar || 'XXXX-XXXX-4829'}</p>
+                        <p className="text-white/60 text-xs font-mono">{citizen?.aadhaar || 'XXXX-XXXX-4829'}</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <button onClick={onLogout}
-                        className="px-4 py-2.5 bg-red-500/15 text-red-400 rounded-xl font-bold hover:bg-red-500/25 transition cursor-pointer border border-red-500/20 text-sm">
+                        className="px-4 py-2.5 bg-red-500/15 text-red-400 rounded-xl font-bold hover:bg-red-500/25 transition cursor-pointer border border-red-500/20 text-sm a11y-touch"
+                        aria-label={lang === 'hi' ? 'लॉग आउट' : 'Log out of your account'}>
                         {t(lang, 'logout')}
                     </button>
                 </div>
@@ -116,15 +117,19 @@ export default function CitizenDashboard({ lang, citizen, onLogout, isOnline, pe
                 </div>
             )}
 
-            {/* ── Tab Navigation ──────────────────────── */}
-            <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+            {/* ── Tab Navigation (WCAG tablist pattern) ────────── */}
+            <div className="flex gap-2 mb-6 overflow-x-auto pb-1" role="tablist" aria-label={lang === 'hi' ? 'डैशबोर्ड सेक्शन' : 'Dashboard sections'}>
                 {TABS.map(tab => (
                     <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-                        className={`flex items-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm cursor-pointer border transition-all whitespace-nowrap ${activeTab === tab.key
+                        role="tab"
+                        id={`tab-${tab.key}`}
+                        aria-selected={activeTab === tab.key}
+                        aria-controls={`tabpanel-${tab.key}`}
+                        className={`flex items-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm cursor-pointer border transition-all whitespace-nowrap a11y-touch ${activeTab === tab.key
                             ? 'bg-indigo-600/20 border-indigo-500/40 text-indigo-300'
-                            : 'bg-white/5 border-white/5 text-white/50 hover:bg-white/8 hover:text-white/70'
+                            : 'bg-white/5 border-white/5 text-white/60 hover:bg-white/8 hover:text-white/70'
                             }`}>
-                        <span>{tab.icon}</span> {tab.label}
+                        <span aria-hidden="true">{tab.icon}</span> {tab.label}
                     </button>
                 ))}
             </div>
@@ -134,7 +139,7 @@ export default function CitizenDashboard({ lang, citizen, onLogout, isOnline, pe
 
                 {/* Bills Tab */}
                 {activeTab === 'bills' && (
-                    <div className="space-y-3 fast-fade-in">
+                    <div className="space-y-3 fast-fade-in" role="tabpanel" id="tabpanel-bills" aria-labelledby="tab-bills">
                         {myBills.map((bill, i) => {
                             const sc = statusColors[bill.status];
                             return (
@@ -142,16 +147,16 @@ export default function CitizenDashboard({ lang, citizen, onLogout, isOnline, pe
                                     className="w-full glass-card rounded-2xl p-5 flex items-center justify-between gap-4 cursor-pointer border border-transparent hover:border-indigo-500/20 text-left hover:scale-[1.01] transition-transform fast-scale-in"
                                     style={{ animationDelay: `${i * 0.05}s` }}>
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-2xl">{bill.icon}</div>
+                                        <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-2xl" aria-hidden="true">{bill.icon}</div>
                                         <div>
                                             <p className="text-white font-bold">{bill.service}</p>
-                                            <p className="text-white/30 text-xs font-mono">{bill.id}</p>
+                                            <p className="text-white/60 text-xs font-mono">{bill.id}</p>
                                         </div>
                                     </div>
                                     <div className="text-right flex items-center gap-4">
                                         <div>
                                             <p className="text-white font-black text-xl">₹{bill.amount.toLocaleString()}</p>
-                                            <p className="text-white/30 text-xs">Due: {bill.due}</p>
+                                            <p className="text-white/60 text-xs">Due: {bill.due}</p>
                                         </div>
                                         <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ background: sc.bg, color: sc.text }}>{sc.label}</span>
                                     </div>
@@ -163,11 +168,11 @@ export default function CitizenDashboard({ lang, citizen, onLogout, isOnline, pe
 
                 {/* Payment History Tab */}
                 {activeTab === 'payments' && (
-                    <div className="space-y-3 fast-fade-in">
+                    <div className="space-y-3 fast-fade-in" role="tabpanel" id="tabpanel-payments" aria-labelledby="tab-payments">
                         <div className="glass-card rounded-2xl p-5">
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="text-white font-bold text-lg">📊 {lang === 'hi' ? 'भुगतान इतिहास' : 'Payment & Transaction History'}</h3>
-                                <span className="text-white/30 text-xs">{paymentHistory.length} transactions</span>
+                                <span className="text-white/60 text-xs">{paymentHistory.length} transactions</span>
                             </div>
                             {paymentHistory.map((p, i) => (
                                 <div key={i} className="flex items-center justify-between py-3 border-b border-white/5 last:border-0 fast-scale-in" style={{ animationDelay: `${i * 0.05}s` }}>
