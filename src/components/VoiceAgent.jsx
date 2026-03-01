@@ -566,6 +566,12 @@ const VoiceAgent = memo(function VoiceAgent({
             'navigate_complaint', 'navigate_property_tax', 'navigate_naam_change',
             'navigate_new_connection', 'navigate_home', 'navigate_admin', 'go_back',
             'navigate', 'set_screen',
+            'navigate_schemes', 'navigate_pm_kisan', 'navigate_ayushman',
+            'navigate_jal_jeevan', 'navigate_pm_awas', 'navigate_ujjwala',
+            'navigate_documents', 'navigate_income_cert', 'navigate_residence_cert',
+            'navigate_caste_cert', 'navigate_birth_cert',
+            'navigate_gas_services', 'navigate_electricity_services',
+            'navigate_municipal', 'navigate_fastag',
         ];
         if (NAV_ACTIONS.includes(action)) {
             skipNextProactiveRef.current = true;
@@ -644,6 +650,23 @@ const VoiceAgent = memo(function VoiceAgent({
             case 'go_back':
                 navigate(-1);
                 break;
+
+            // ═══ NEW DEPARTMENT NAVIGATION ═══
+            case 'navigate_schemes': setScreen('guest'); navigate('/schemes'); break;
+            case 'navigate_pm_kisan': setScreen('guest'); navigate('/schemes/pm-kisan'); break;
+            case 'navigate_ayushman': setScreen('guest'); navigate('/schemes/ayushman'); break;
+            case 'navigate_jal_jeevan': setScreen('guest'); navigate('/schemes/jal-jeevan'); break;
+            case 'navigate_pm_awas': setScreen('guest'); navigate('/schemes/pm-awas'); break;
+            case 'navigate_ujjwala': setScreen('guest'); navigate('/schemes/ujjwala'); break;
+            case 'navigate_documents': setScreen('guest'); navigate('/documents'); break;
+            case 'navigate_income_cert': setScreen('guest'); navigate('/documents/income'); break;
+            case 'navigate_residence_cert': setScreen('guest'); navigate('/documents/residence'); break;
+            case 'navigate_caste_cert': setScreen('guest'); navigate('/documents/caste'); break;
+            case 'navigate_birth_cert': setScreen('guest'); navigate('/documents/birth'); break;
+            case 'navigate_gas_services': setScreen('guest'); navigate('/gas-services'); break;
+            case 'navigate_electricity_services': setScreen('guest'); navigate('/electricity-services'); break;
+            case 'navigate_municipal': setScreen('guest'); navigate('/municipal'); break;
+            case 'navigate_fastag': setScreen('guest'); navigate('/fastag'); break;
             case 'stop_voice':
                 deactivateVoice();
                 break;

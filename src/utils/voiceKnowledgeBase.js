@@ -184,8 +184,8 @@ export const RESPONSES = {
 
     page_guidance: {
         '/': {
-            hi: 'होम पेज खुल गया। यहाँ चार सेवाएं हैं — बिजली बिल, पानी बिल, गैस बिल, और Property Tax। बोलें कौन सा बिल भरना है, या शिकायत दर्ज करनी है।',
-            en: 'Home page is open. Four services — electricity, water, gas, and property tax. Tell me which bill or say "complaint".',
+            hi: 'होम पेज खुल गया। यहाँ चार विभाग हैं — बिल भुगतान, PM सरकारी योजनाएं, नगरपालिका सेवाएं, और दस्तावेज़ सेवाएं। बोलें कौन सी सेवा चाहिए — जैसे बिजली बिल, PM किसान, FASTag, या शिकायत।',
+            en: 'Home page is open. Four departments — Bill Payments, PM Schemes, Municipal Services, and Documents. Say which service you need — like electricity bill, PM KISAN, FASTag, or complaint.',
         },
         '/bill/electricity': {
             hi: 'बिजली बिल का पेज खुल गया। अब अपनी खाता संख्या डालें — यह आपके पुराने बिजली बिल पर ऊपर बाईं तरफ लिखी होती है, जैसे PSEB-123456। नीचे नंबर पैड से डालें या QR कोड स्कैन करें।',
@@ -214,6 +214,30 @@ export const RESPONSES = {
         '/new-connection': {
             hi: 'नया कनेक्शन का फॉर्म खुल गया है। पहले कनेक्शन का प्रकार चुनें — बिजली, पानी, या गैस। फिर DigiLocker से दस्तावेज़ लिए जाएंगे। फॉर्म भरें — नाम, पता, फोन नंबर। दस्तावेज़ वेरिफाई करें और सबमिट दबाएं। 7-15 दिन में कनेक्शन हो जाएगा।',
             en: 'New connection form is open. Select connection type — electricity, water, or gas. Documents will be fetched from DigiLocker. Fill the form with name, address, and phone. Verify documents and submit. Connection in 7-15 days.',
+        },
+        '/schemes': {
+            hi: 'सरकारी योजनाओं का पेज खुल गया। पाँच योजनाएं हैं — PM किसान, आयुष्मान भारत, जल जीवन मिशन, PM आवास, और PM उज्ज्वला। बोलें कौन सी योजना की जानकारी चाहिए।',
+            en: 'Government schemes page is open. Five schemes — PM KISAN, Ayushman Bharat, Jal Jeevan Mission, PM Awas, and PM Ujjwala. Tell me which scheme you want.',
+        },
+        '/documents': {
+            hi: 'दस्तावेज़ सेवाओं का पेज खुल गया। चार प्रमाण पत्र — आय, निवास, जाति, जन्म प्रमाण पत्र। e-Hastakshar से डिजिटल हस्ताक्षरित, QR से वेरिफाई होंगे। बोलें कौन सा प्रमाण पत्र चाहिए।',
+            en: 'Document services page open. Four certificates — Income, Residence, Caste, Birth. Digitally signed via e-Hastakshar, QR-verifiable. Say which certificate you need.',
+        },
+        '/gas-services': {
+            hi: 'गैस सेवाओं का पेज खुल गया। सिलेंडर बुकिंग, सब्सिडी स्टेटस, पाइपलाइन कनेक्शन, और उज्ज्वला योजना। बोलें क्या करना है।',
+            en: 'Gas services page open. Cylinder booking, subsidy status, pipeline connection, and Ujjwala scheme. Tell me what you need.',
+        },
+        '/electricity-services': {
+            hi: 'बिजली सेवाओं का पेज खुल गया। बिल भुगतान, मीटर रीडिंग, स्मार्ट मीटर रिचार्ज, मीटर शिकायत, वोल्टेज शिकायत, गलत बिल, और स्लैब कैलकुलेटर। बोलें क्या करना है।',
+            en: 'Electricity services page open. Bill payment, meter reading, smart meter recharge, complaints, wrong bill dispute, and slab calculator.',
+        },
+        '/municipal': {
+            hi: 'नगरपालिका सेवाओं का पेज खुल गया। Property Tax, पानी बिल, नाला शिकायत, सड़क शिकायत, स्ट्रीटलाइट, कचरा, FASTag, और जन्म प्रमाण पत्र। बोलें क्या करना है।',
+            en: 'Municipal services page open. Property tax, water bill, sewerage, road, streetlight, garbage complaints, FASTag, and birth certificate.',
+        },
+        '/fastag': {
+            hi: 'FASTag रिचार्ज का पेज खुल गया। अपनी गाड़ी का नंबर या FASTag ID डालें। बैलेंस दिखेगा और रिचार्ज कर सकते हैं — UPI, Cash, या Card से।',
+            en: 'FASTag recharge page open. Enter your vehicle number or FASTag ID. Check balance and recharge via UPI, Cash, or Card.',
         },
         '/admin': {
             hi: 'एडमिन डैशबोर्ड खुल गया है। यहाँ सभी लेनदेन, शिकायतें, और किओस्क स्थिति दिखती है। सामान्य उपयोगकर्ताओं को इसकी ज़रूरत नहीं होती।',

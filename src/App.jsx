@@ -26,6 +26,12 @@ const NaamChangeForm = lazy(() => import('./components/NaamChangeForm'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const NewConnectionForm = lazy(() => import('./components/NewConnectionForm'));
 const OfflineIndicator = lazy(() => import('./components/OfflineIndicator'));
+const GovSchemes = lazy(() => import('./components/GovSchemes'));
+const DocumentServices = lazy(() => import('./components/DocumentServices'));
+const GasServices = lazy(() => import('./components/GasServices'));
+const ElectricityServices = lazy(() => import('./components/ElectricityServices'));
+const MunicipalServices = lazy(() => import('./components/MunicipalServices'));
+const FASTagRecharge = lazy(() => import('./components/FASTagRecharge'));
 import VoiceAgent from './components/VoiceAgent'; // Direct import — must be ready immediately
 
 function Loader() {
@@ -233,6 +239,15 @@ function AppContent() {
                     <Route path="/complaint" element={<ComplaintForm lang={lang} isOnline={isOnline} />} />
                     <Route path="/name-change" element={<NaamChangeForm lang={lang} isOnline={isOnline} />} />
                     <Route path="/new-connection" element={<NewConnectionForm lang={lang} />} />
+                    <Route path="/schemes/:schemeType" element={<GovSchemes lang={lang} />} />
+                    <Route path="/schemes" element={<GovSchemes lang={lang} />} />
+                    <Route path="/documents/:docType" element={<DocumentServices lang={lang} />} />
+                    <Route path="/documents" element={<DocumentServices lang={lang} />} />
+                    <Route path="/gas-services" element={<GasServices lang={lang} />} />
+                    <Route path="/electricity-services" element={<ElectricityServices lang={lang} />} />
+                    <Route path="/municipal/:serviceType" element={<MunicipalServices lang={lang} />} />
+                    <Route path="/municipal" element={<MunicipalServices lang={lang} />} />
+                    <Route path="/fastag" element={<FASTagRecharge lang={lang} />} />
                     <Route path="/admin" element={<AdminDashboard lang={lang} />} />
                   </Routes>
                 </main>

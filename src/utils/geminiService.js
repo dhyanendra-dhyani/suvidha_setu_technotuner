@@ -224,6 +224,52 @@ function getOfflineFallback(userText) {
     if (t.includes('property') || t.includes('tax') || t.includes('टैक्स'))
         return { text: 'Property Tax का पेज खोल रहा हूँ।', action: 'navigate_bill_property_tax', params: {} };
 
+    // ═══ NEW DEPARTMENTS — Offline fallback navigation ═══
+
+    // PM Government Schemes
+    if (t.includes('kisan') || t.includes('किसान') || t.includes('pm kisan') || t.includes('installment'))
+        return { text: 'PM किसान योजना का पेज खोल रहा हूँ।', action: 'navigate_pm_kisan', params: {} };
+    if (t.includes('ayushman') || t.includes('आयुष्मान') || t.includes('hospital') || t.includes('अस्पताल'))
+        return { text: 'आयुष्मान भारत का पेज खोल रहा हूँ।', action: 'navigate_ayushman', params: {} };
+    if (t.includes('jal jeevan') || t.includes('जल जीवन') || t.includes('tap connection') || t.includes('नल'))
+        return { text: 'जल जीवन मिशन का पेज खोल रहा हूँ।', action: 'navigate_jal_jeevan', params: {} };
+    if (t.includes('awas') || t.includes('आवास') || t.includes('ghar') || t.includes('house scheme'))
+        return { text: 'PM आवास योजना का पेज खोल रहा हूँ।', action: 'navigate_pm_awas', params: {} };
+    if (t.includes('ujjwala') || t.includes('उज्ज्वला') || t.includes('free lpg') || t.includes('bpl'))
+        return { text: 'PM उज्ज्वला योजना का पेज खोल रहा हूँ।', action: 'navigate_ujjwala', params: {} };
+    if (t.includes('yojana') || t.includes('योजना') || t.includes('scheme') || t.includes('sarkari'))
+        return { text: 'सरकारी योजनाओं का पेज खोल रहा हूँ।', action: 'navigate_schemes', params: {} };
+
+    // Document Services
+    if (t.includes('income') || t.includes('आय') || t.includes('aay praman'))
+        return { text: 'आय प्रमाण पत्र का पेज खोल रहा हूँ।', action: 'navigate_income_cert', params: {} };
+    if (t.includes('residence') || t.includes('निवास') || t.includes('niwas'))
+        return { text: 'निवास प्रमाण पत्र का पेज खोल रहा हूँ।', action: 'navigate_residence_cert', params: {} };
+    if (t.includes('caste') || t.includes('जाति') || t.includes('jati'))
+        return { text: 'जाति प्रमाण पत्र का पेज खोल रहा हूँ।', action: 'navigate_caste_cert', params: {} };
+    if (t.includes('birth') || t.includes('janam') || t.includes('जन्म'))
+        return { text: 'जन्म प्रमाण पत्र का पेज खोल रहा हूँ।', action: 'navigate_birth_cert', params: {} };
+    if (t.includes('certificate') || t.includes('praman') || t.includes('प्रमाण') || t.includes('document') || t.includes('hastakshar'))
+        return { text: 'दस्तावेज़ सेवाओं का पेज खोल रहा हूँ।', action: 'navigate_documents', params: {} };
+
+    // FASTag
+    if (t.includes('fastag') || t.includes('toll') || t.includes('टोल') || t.includes('vehicle'))
+        return { text: 'FASTag रिचार्ज का पेज खोल रहा हूँ।', action: 'navigate_fastag', params: {} };
+
+    // Gas Services (expanded — before generic gas match)
+    if (t.includes('cylinder') || t.includes('सिलेंडर') || t.includes('lpg') || t.includes('booking') || t.includes('बुकिंग'))
+        return { text: 'गैस सेवाओं का पेज खोल रहा हूँ — सिलेंडर बुकिंग, सब्सिडी, और कनेक्शन।', action: 'navigate_gas_services', params: {} };
+    if (t.includes('subsidy') || t.includes('सब्सिडी') || t.includes('pipeline') || t.includes('पाइपलाइन'))
+        return { text: 'गैस सेवाओं का पेज खोल रहा हूँ।', action: 'navigate_gas_services', params: {} };
+
+    // Electricity Services (expanded)
+    if (t.includes('meter reading') || t.includes('मीटर') || t.includes('smart meter') || t.includes('slab') || t.includes('tariff'))
+        return { text: 'बिजली सेवाओं का पेज खोल रहा हूँ — मीटर रीडिंग, स्मार्ट मीटर, और स्लैब कैलकुलेटर।', action: 'navigate_electricity_services', params: {} };
+
+    // Municipal Services
+    if (t.includes('nagar') || t.includes('नगर') || t.includes('municipal') || t.includes('sewerage') || t.includes('pothole') || t.includes('streetlight') || t.includes('garbage') || t.includes('कचरा') || t.includes('सड़क') || t.includes('sadak'))
+        return { text: 'नगरपालिका सेवाओं का पेज खोल रहा हूँ।', action: 'navigate_municipal', params: {} };
+
     // ═══ Context-aware bill flow (ONLY on bill pages) ═══
     const onBillPage = typeof window !== 'undefined' && window.location.pathname.includes('/bill/');
 
