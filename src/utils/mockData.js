@@ -253,6 +253,14 @@ export const certificateData = {
         registrationNo: 'LDH-2020-12345',
         issuedDate: '2020-06-01', issuingAuthority: 'Registrar, Municipal Corporation Ludhiana', qrCode: 'QR-BTH-PB-99001',
     },
+    domicile: {
+        certNo: 'DOM-PB-2026-00321',
+        name: 'Rajesh Kumar', fatherName: 'Sh. Mohan Lal',
+        address: 'H.No. 234, Sector 5, Ludhiana, Punjab',
+        state: 'Punjab', residingSince: '1990', purpose: 'Government Job / Education',
+        issuedDate: '2026-03-01', validTill: '2031-02-28',
+        issuingAuthority: 'SDM, Ludhiana', qrCode: 'QR-DOM-PB-321',
+    },
 };
 
 /** Gas Services — LPG providers */
@@ -325,3 +333,39 @@ export function generateFastagTxnId() {
     return `FTAG-TXN-${Date.now().toString(36).toUpperCase()}`;
 }
 
+/** Pension Status */
+export const pensionData = {
+    name: 'Mohinder Kaur', scheme: 'Old Age Pension (NSAP - IGNOAPS)',
+    ppoNumber: 'PPO-PB-LDH-00789', monthlyAmount: 3000,
+    bankName: 'Punjab & Sind Bank', accountEnding: '4829', status: 'Active',
+    payments: [
+        { month: 'Feb 2026', amount: 3000, status: 'Credited' },
+        { month: 'Jan 2026', amount: 3000, status: 'Credited' },
+        { month: 'Dec 2025', amount: 3000, status: 'Credited' },
+    ],
+};
+
+/** PDS Ration Card */
+export const pdsData = {
+    headOfFamily: 'Ramesh Kumar', cardType: 'PHH (Priority Household)',
+    cardNumber: 'PB-RC-LDH-00345', members: 5, fpsShop: 'Fair Price Shop #12, Sector 5, Ludhiana',
+    entitlement: [
+        { item: 'Rice', quantity: '5 kg/person', rate: 3 },
+        { item: 'Wheat', quantity: '5 kg/person', rate: 2 },
+        { item: 'Sugar', quantity: '1 kg/family', rate: 13.50 },
+    ],
+    distribution: [
+        { month: 'Feb 2026', collected: true },
+        { month: 'Jan 2026', collected: true },
+        { month: 'Dec 2025', collected: false },
+    ],
+};
+
+/** Bhulekh — Land Records */
+export const bhulekhData = {
+    recordId: 'BLK-UP-2026-00456', ownerName: 'Rajesh Kumar', fatherName: 'Sh. Mohan Lal',
+    khasraNo: '123/456', khataNo: '789', village: 'Gill', tehsil: 'Ludhiana',
+    district: 'Ludhiana', state: 'Punjab', area: '2.5 Acres (10 Biswa)',
+    landType: 'Agricultural (Irrigated)', lastMutation: '2024-05-20',
+    encumbrances: 'None', qrCode: 'QR-BLK-UP-456',
+};

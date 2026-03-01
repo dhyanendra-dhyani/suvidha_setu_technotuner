@@ -1,9 +1,10 @@
 /**
  * ═══════════════════════════════════════════════════════════
- * HomeScreen v8 — Category-Based Dashboard
+ * HomeScreen v9 — Restructured Category Dashboard
  *
- * Organized by department: Bills, PM Schemes, Municipal,
- * Documents. Voice handled globally by VoiceAgent.
+ * 5 Categories matching the feature matrix:
+ * ⚡ Electricity | 💧 Water & Municipal | 🔥 LPG Gas
+ * 📜 Revenue & Welfare | 🛡️ Citizen Dashboard
  * ═══════════════════════════════════════════════════════════
  */
 
@@ -14,49 +15,57 @@ import { useVoice } from './VoiceContext';
 
 const CATEGORIES = [
     {
-        key: 'bills', label: 'Bills & Payments', labelHi: 'बिल और भुगतान', icon: '💳',
+        key: 'electricity', label: 'Electricity', labelHi: 'बिजली', icon: '⚡',
         gradient: 'linear-gradient(135deg, rgba(251,191,36,0.08), rgba(251,191,36,0.02))',
         border: 'rgba(251,191,36,0.2)', color: '#FBBF24',
         services: [
-            { key: 'electricity', icon: '⚡', label: 'Electricity', labelHi: 'बिजली बिल', route: '/electricity-services' },
-            { key: 'water', icon: '💧', label: 'Water', labelHi: 'पानी बिल', route: '/bill/water' },
-            { key: 'gas', icon: '🔥', label: 'Gas', labelHi: 'गैस सेवाएं', route: '/gas-services' },
-            { key: 'property', icon: '🏠', label: 'Property Tax', labelHi: 'प्रॉपर्टी टैक्स', route: '/bill/property-tax' },
-            { key: 'fastag', icon: '🚗', label: 'FASTag', labelHi: 'FASTag रिचार्ज', route: '/fastag' },
+            { key: 'elec-bill', icon: '💳', label: 'Bill Payment', labelHi: 'बिल भुगतान', route: '/bill/electricity', mode: 'guest' },
+            { key: 'meter-reading', icon: '📸', label: 'Meter Reading', labelHi: 'मीटर रीडिंग', route: '/electricity-services', mode: 'guest' },
+            { key: 'power-cut', icon: '⚠️', label: 'Power Cut / Fault', labelHi: 'पावर कट शिकायत', route: '/electricity-services', mode: 'guest' },
+            { key: 'wrong-bill', icon: '📝', label: 'Wrong Bill Dispute', labelHi: 'गलत बिल विवाद', route: '/electricity-services', mode: 'citizen' },
+            { key: 'new-elec', icon: '🔌', label: 'New Connection', labelHi: 'नया कनेक्शन', route: '/new-connection', mode: 'citizen' },
         ],
     },
     {
-        key: 'schemes', label: 'PM Government Schemes', labelHi: 'PM सरकारी योजनाएं', icon: '🏛️',
-        gradient: 'linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.02))',
-        border: 'rgba(34,197,94,0.2)', color: '#22C55E',
-        services: [
-            { key: 'pm-kisan', icon: '🌾', label: 'PM-KISAN', labelHi: 'PM किसान', route: '/schemes/pm-kisan' },
-            { key: 'ayushman', icon: '🏥', label: 'Ayushman Bharat', labelHi: 'आयुष्मान भारत', route: '/schemes/ayushman' },
-            { key: 'jal-jeevan', icon: '🚰', label: 'Jal Jeevan', labelHi: 'जल जीवन', route: '/schemes/jal-jeevan' },
-            { key: 'pm-awas', icon: '🏠', label: 'PM Awas', labelHi: 'PM आवास', route: '/schemes/pm-awas' },
-            { key: 'ujjwala', icon: '🔥', label: 'PM Ujjwala', labelHi: 'PM उज्ज्वला', route: '/schemes/ujjwala' },
-        ],
-    },
-    {
-        key: 'municipal', label: 'Municipal Services', labelHi: 'नगरपालिका सेवाएं', icon: '🏢',
-        gradient: 'linear-gradient(135deg, rgba(139,92,246,0.08), rgba(139,92,246,0.02))',
-        border: 'rgba(139,92,246,0.2)', color: '#8B5CF6',
-        services: [
-            { key: 'complaint', icon: '📝', label: 'File Complaint', labelHi: 'शिकायत दर्ज', route: '/complaint' },
-            { key: 'municipal-hub', icon: '🏢', label: 'All Municipal', labelHi: 'सभी सेवाएं', route: '/municipal' },
-            { key: 'new-connection', icon: '🔌', label: 'New Connection', labelHi: 'नया कनेक्शन', route: '/new-connection' },
-            { key: 'name-change', icon: '✏️', label: 'Name Change', labelHi: 'नाम बदलें', route: '/name-change' },
-        ],
-    },
-    {
-        key: 'documents', label: 'Document Services', labelHi: 'दस्तावेज़ सेवाएं', icon: '📄',
+        key: 'water-municipal', label: 'Water & Municipal', labelHi: 'पानी और नगरपालिका', icon: '💧',
         gradient: 'linear-gradient(135deg, rgba(59,130,246,0.08), rgba(59,130,246,0.02))',
         border: 'rgba(59,130,246,0.2)', color: '#3B82F6',
         services: [
-            { key: 'income', icon: '💰', label: 'Income Cert.', labelHi: 'आय प्रमाण पत्र', route: '/documents/income' },
-            { key: 'residence', icon: '🏠', label: 'Residence Cert.', labelHi: 'निवास प्रमाण पत्र', route: '/documents/residence' },
-            { key: 'caste', icon: '📜', label: 'Caste Cert.', labelHi: 'जाति प्रमाण पत्र', route: '/documents/caste' },
-            { key: 'birth', icon: '👶', label: 'Birth Cert.', labelHi: 'जन्म प्रमाण पत्र', route: '/documents/birth' },
+            { key: 'water-bill', icon: '💧', label: 'Water / Tax Payment', labelHi: 'पानी / प्रॉपर्टी टैक्स', route: '/bill/water', mode: 'guest' },
+            { key: 'civic-griev', icon: '🛣️', label: 'Civic Grievance', labelHi: 'नागरिक शिकायत', route: '/municipal', mode: 'guest' },
+            { key: 'tax-exempt', icon: '📋', label: 'Tax Exemption', labelHi: 'टैक्स छूट आवेदन', route: '/municipal', mode: 'citizen' },
+            { key: 'name-trans', icon: '✏️', label: 'Name / Ownership', labelHi: 'नाम / मालिकाना बदलाव', route: '/name-change', mode: 'citizen' },
+        ],
+    },
+    {
+        key: 'lpg-gas', label: 'LPG Gas', labelHi: 'एलपीजी गैस', icon: '🔥',
+        gradient: 'linear-gradient(135deg, rgba(249,115,22,0.08), rgba(249,115,22,0.02))',
+        border: 'rgba(249,115,22,0.2)', color: '#F97316',
+        services: [
+            { key: 'cylinder', icon: '🛢️', label: 'Cylinder Booking', labelHi: 'सिलेंडर बुकिंग', route: '/gas-services', mode: 'guest' },
+            { key: 'subsidy', icon: '💰', label: 'Subsidy Status', labelHi: 'सब्सिडी स्टेटस', route: '/gas-services', mode: 'guest' },
+            { key: 'gas-conn', icon: '🔧', label: 'New Gas Connection', labelHi: 'नया गैस कनेक्शन', route: '/gas-services', mode: 'citizen' },
+        ],
+    },
+    {
+        key: 'revenue', label: 'Revenue & Welfare', labelHi: 'राजस्व और कल्याण', icon: '📜',
+        gradient: 'linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.02))',
+        border: 'rgba(34,197,94,0.2)', color: '#22C55E',
+        services: [
+            { key: 'pm-schemes', icon: '🏛️', label: 'PM Scheme Status', labelHi: 'PM योजना स्टेटस', route: '/schemes', mode: 'guest' },
+            { key: 'apply-cert', icon: '📝', label: 'Apply Certificate', labelHi: 'प्रमाण पत्र आवेदन', route: '/documents', mode: 'citizen' },
+            { key: 'print-cert', icon: '🖨️', label: 'Print Certificates', labelHi: 'प्रमाण पत्र प्रिंट', route: '/documents', mode: 'citizen' },
+            { key: 'bhulekh', icon: '🗺️', label: 'Land Records', labelHi: 'भूलेख जमीन रिकॉर्ड', route: '/bhulekh', mode: 'citizen' },
+        ],
+    },
+    {
+        key: 'dashboard', label: 'Citizen Dashboard', labelHi: 'नागरिक डैशबोर्ड', icon: '🛡️',
+        gradient: 'linear-gradient(135deg, rgba(139,92,246,0.08), rgba(139,92,246,0.02))',
+        border: 'rgba(139,92,246,0.2)', color: '#8B5CF6',
+        services: [
+            { key: 'pay-history', icon: '📊', label: 'Payment History', labelHi: 'भुगतान इतिहास', route: '/', mode: 'citizen', screen: 'citizen-dashboard' },
+            { key: 'track-griev', icon: '📋', label: 'Track Grievance', labelHi: 'शिकायत ट्रैक करें', route: '/', mode: 'citizen', screen: 'citizen-dashboard' },
+            { key: 'parivaar', icon: '👨‍👩‍👧‍👦', label: 'Parivaar Link', labelHi: 'परिवार लिंक', route: '/', mode: 'citizen', screen: 'citizen-dashboard' },
         ],
     },
 ];
@@ -66,7 +75,6 @@ export default function HomeScreen({ lang, setLang, onBack }) {
     const { voiceMode, isActive, setPageData, blindMode } = useVoice();
     const [expandedCat, setExpandedCat] = useState(null);
 
-    // Report available services for blind mode
     useEffect(() => {
         const allServices = CATEGORIES.flatMap(c => c.services.map(s => ({ ...s, category: c.key })));
         setPageData?.({
@@ -102,7 +110,7 @@ export default function HomeScreen({ lang, setLang, onBack }) {
                 <div className="flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 rounded-xl px-4 py-2 w-full max-w-3xl">
                     <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
                     <span className="text-indigo-300 text-sm font-medium">
-                        {lang === 'hi' ? '🎙️ बोलें — बिजली बिल, PM किसान, FASTag, शिकायत' : '🎙️ Say — electricity bill, PM KISAN, FASTag, complaint'}
+                        {lang === 'hi' ? '🎙️ बोलें — बिजली, पानी, गैस, PM किसान, या शिकायत' : '🎙️ Say — electricity, water, gas, PM KISAN, or complaint'}
                     </span>
                 </div>
             )}
@@ -132,11 +140,15 @@ export default function HomeScreen({ lang, setLang, onBack }) {
                                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 px-4 pb-4">
                                     {cat.services.map((svc, si) => (
                                         <button key={svc.key} onClick={() => navigate(svc.route)}
-                                            className="group rounded-xl p-3 cursor-pointer border border-transparent hover:border-white/10 flex flex-col items-center gap-2 transition-all hover:bg-white/5 active:scale-95 fast-scale-in"
+                                            className="group rounded-xl p-3 cursor-pointer border border-transparent hover:border-white/10 flex flex-col items-center gap-2 transition-all hover:bg-white/5 active:scale-95 fast-scale-in relative"
                                             style={{ animationDelay: `${(ci * 0.08) + (si * 0.04)}s` }}>
                                             <span className="text-2xl group-hover:scale-110 transition-transform">{svc.icon}</span>
                                             <span className="text-white/80 text-xs font-medium text-center leading-tight">
                                                 {lang === 'hi' ? svc.labelHi : svc.label}
+                                            </span>
+                                            {/* Guest/Citizen badge */}
+                                            <span className={`absolute top-1 right-1 text-[8px] font-bold px-1.5 py-0.5 rounded-full ${svc.mode === 'citizen' ? 'bg-amber-500/20 text-amber-400' : 'bg-green-500/20 text-green-400'}`}>
+                                                {svc.mode === 'citizen' ? '🔐' : '👤'}
                                             </span>
                                         </button>
                                     ))}

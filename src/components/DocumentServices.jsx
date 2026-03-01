@@ -11,8 +11,9 @@ import { certificateData, generateCertNo } from '../utils/mockData';
 
 const DOC_TYPES = [
     { key: 'income', label: 'Income Certificate', labelHi: 'आय प्रमाण पत्र', icon: '💰', color: '#22C55E' },
-    { key: 'residence', label: 'Residence Certificate', labelHi: 'निवास प्रमाण पत्र', icon: '🏠', color: '#3B82F6' },
     { key: 'caste', label: 'Caste Certificate', labelHi: 'जाति प्रमाण पत्र', icon: '📜', color: '#8B5CF6' },
+    { key: 'domicile', label: 'Domicile Certificate', labelHi: 'अधिवास प्रमाण पत्र', icon: '🗺️', color: '#06B6D4' },
+    { key: 'residence', label: 'Residence Certificate', labelHi: 'निवास प्रमाण पत्र', icon: '🏠', color: '#3B82F6' },
     { key: 'birth', label: 'Birth Certificate Reprint', labelHi: 'जन्म प्रमाण पत्र', icon: '👶', color: '#F97316' },
 ];
 

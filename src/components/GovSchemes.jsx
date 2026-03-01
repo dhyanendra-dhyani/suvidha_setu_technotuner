@@ -1,18 +1,20 @@
 /**
  * ═══════════════════════════════════════════════════════════
- * GovSchemes — PM Government Schemes Portal
- * PM-KISAN, Ayushman Bharat, Jal Jeevan, PM Awas, Ujjwala
+ * GovSchemes — Revenue & Welfare Portal
+ * PM-KISAN, Ayushman Bharat, Pension, PDS, PM Awas, Ujjwala
  * ═══════════════════════════════════════════════════════════
  */
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { pmKisanData, ayushmanData, jalJeevanData, pmAwasData, ujjwalaData } from '../utils/mockData';
+import { pmKisanData, ayushmanData, jalJeevanData, pmAwasData, ujjwalaData, pensionData, pdsData } from '../utils/mockData';
 
 const SCHEMES = [
     { key: 'pm-kisan', label: 'PM-KISAN', icon: '🌾', desc: 'Installment Status & Beneficiary Check', color: '#22C55E' },
     { key: 'ayushman', label: 'Ayushman Bharat', icon: '🏥', desc: 'Eligibility & Empanelled Hospitals', color: '#3B82F6' },
-    { key: 'jal-jeevan', label: 'Jal Jeevan Mission', icon: '🚰', desc: 'Tap Connection Status', color: '#06B6D4' },
+    { key: 'pension', label: 'Pension Status', icon: '🧓', desc: 'Old Age / Widow / Disability Pension', color: '#A855F7' },
+    { key: 'pds', label: 'PDS Ration Card', icon: '🍚', desc: 'Ration Card Status & Entitlement', color: '#EAB308' },
     { key: 'pm-awas', label: 'PM Awas Yojana', icon: '🏠', desc: 'Application Status Tracking', color: '#8B5CF6' },
+    { key: 'jal-jeevan', label: 'Jal Jeevan Mission', icon: '🚰', desc: 'Tap Connection Status', color: '#06B6D4' },
     { key: 'ujjwala', label: 'PM Ujjwala Yojana', icon: '🔥', desc: 'Free LPG for BPL Families', color: '#F97316' },
 ];
 
@@ -34,8 +36,8 @@ export default function GovSchemes({ lang }) {
                     <div className="flex items-center gap-3 mb-6">
                         <button onClick={() => navigate(-1)} className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white cursor-pointer text-lg">←</button>
                         <div>
-                            <h2 className="text-2xl font-black text-white">🏛️ PM Government Schemes</h2>
-                            <p className="text-white/40 text-sm">Check status of central government schemes</p>
+                            <h2 className="text-2xl font-black text-white">📜 Revenue & Welfare</h2>
+                            <p className="text-white/40 text-sm">PM Schemes, Pension, PDS & welfare status checks</p>
                         </div>
                     </div>
                     <div className="grid gap-3">
@@ -60,6 +62,8 @@ export default function GovSchemes({ lang }) {
         switch (activeScheme) {
             case 'pm-kisan': return <PMKisanView searched={searched} inputId={inputId} setInputId={setInputId} onSearch={doSearch} />;
             case 'ayushman': return <AyushmanView searched={searched} inputId={inputId} setInputId={setInputId} onSearch={doSearch} />;
+            case 'pension': return <PensionView searched={searched} inputId={inputId} setInputId={setInputId} onSearch={doSearch} />;
+            case 'pds': return <PDSView searched={searched} inputId={inputId} setInputId={setInputId} onSearch={doSearch} />;
             case 'jal-jeevan': return <JalJeevanView searched={searched} inputId={inputId} setInputId={setInputId} onSearch={doSearch} />;
             case 'pm-awas': return <PMAwasView searched={searched} inputId={inputId} setInputId={setInputId} onSearch={doSearch} />;
             case 'ujjwala': return <UjjwalaView />;
@@ -255,4 +259,70 @@ function UjjwalaView() {
             )}
         </div>
     );
+}
+
+function PensionView({ searched, inputId, setInputId, onSearch }) {
+    const d = pensionData;
+    return (<>
+        <SearchBox label="Enter Aadhaar / PPO Number" placeholder="XXXX-XXXX-XXXX" inputId={inputId} setInputId={setInputId} onSearch={onSearch} />
+        {searched && (
+            <div className="space-y-4 fast-fade-in">
+                <div className="bg-purple-500/10 border border-purple-500/20 rounded-2xl p-5">
+                    <p className="text-purple-400 font-bold mb-3">🧓 Pension Details</p>
+                    <InfoRow label="Name" value={d.name} />
+                    <InfoRow label="Scheme" value={d.scheme} />
+                    <InfoRow label="PPO Number" value={d.ppoNumber} />
+                    <InfoRow label="Monthly Amount" value={`₹${d.monthlyAmount}`} color="text-green-400" />
+                    <InfoRow label="Bank" value={d.bankName} />
+                    <InfoRow label="Status" value={d.status} color="text-green-400" />
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                    <p className="text-white font-bold mb-3">💰 Last 3 Payments</p>
+                    {d.payments.map((p, i) => (
+                        <div key={i} className="flex justify-between py-2 border-b border-white/5 last:border-0">
+                            <span className="text-white/60 text-sm">{p.month}</span>
+                            <span className="text-green-400 font-bold text-sm">₹{p.amount} — {p.status}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )}
+    </>);
+}
+
+function PDSView({ searched, inputId, setInputId, onSearch }) {
+    const d = pdsData;
+    return (<>
+        <SearchBox label="Enter Ration Card Number" placeholder="PB-RC-XXXXXXXX" inputId={inputId} setInputId={setInputId} onSearch={onSearch} />
+        {searched && (
+            <div className="space-y-4 fast-fade-in">
+                <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-5">
+                    <p className="text-yellow-400 font-bold mb-3">🍚 Ration Card Details</p>
+                    <InfoRow label="Head of Family" value={d.headOfFamily} />
+                    <InfoRow label="Card Type" value={d.cardType} color="text-yellow-400" />
+                    <InfoRow label="Card Number" value={d.cardNumber} />
+                    <InfoRow label="Members" value={`${d.members} persons`} />
+                    <InfoRow label="FPS Shop" value={d.fpsShop} />
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                    <p className="text-white font-bold mb-3">📦 Monthly Entitlement</p>
+                    {d.entitlement.map((e, i) => (
+                        <div key={i} className="flex justify-between py-2 border-b border-white/5 last:border-0">
+                            <span className="text-white/60 text-sm">{e.item}</span>
+                            <span className="text-white font-medium text-sm">{e.quantity} @ ₹{e.rate}/kg</span>
+                        </div>
+                    ))}
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                    <p className="text-white font-bold mb-3">📋 Distribution History</p>
+                    {d.distribution.map((dist, i) => (
+                        <div key={i} className="flex justify-between py-2 border-b border-white/5 last:border-0">
+                            <span className="text-white/60 text-sm">{dist.month}</span>
+                            <span className={`font-bold text-sm ${dist.collected ? 'text-green-400' : 'text-red-400'}`}>{dist.collected ? '✅ Collected' : '❌ Not Collected'}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )}
+    </>);
 }
