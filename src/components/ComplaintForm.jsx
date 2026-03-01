@@ -222,7 +222,7 @@ export default function ComplaintForm({ lang, isOnline }) {
                 {/* ── STEP 3: Done ──────────────────────── */}
                 {step === 'done' && (
                     <div className="flex flex-col items-center gap-6 py-8 fast-scale-in">
-                        <div className="w-28 h-28 rounded-full gradient-primary flex items-center justify-center shadow-2xl shadow-indigo-500/20">
+                        <div className="w-28 h-28 rounded-full gradient-primary flex items-center justify-center shadow-2xl shadow-indigo-500/20 success-check">
                             <span className="text-white text-5xl">📋</span>
                         </div>
 
@@ -232,7 +232,8 @@ export default function ComplaintForm({ lang, isOnline }) {
                                     ? (lang === 'hi' ? 'टिकट जनरेट हुआ!' : 'Ticket Generated!')
                                     : (lang === 'hi' ? 'स्थानीय रूप से सहेजा गया' : 'Saved Locally')}
                             </h3>
-                            <p className="text-white font-mono text-lg font-bold">{ticketId}</p>
+                            <p className="text-white/60 text-xs mb-1">Ticket / Reference ID</p>
+                            <p className="text-white font-mono text-lg font-bold bg-white/5 inline-block px-4 py-1.5 rounded-lg">{ticketId}</p>
                         </div>
 
                         {!isOnline && (
@@ -243,11 +244,16 @@ export default function ComplaintForm({ lang, isOnline }) {
                             </div>
                         )}
 
-                        <div className="flex gap-3 w-full max-w-sm">
-                            <button onClick={handleDownload} className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white font-semibold cursor-pointer hover:bg-white/10">
-                                🖨️ Print Slip
-                            </button>
-                            <button onClick={() => navigate('/')} className="flex-1 py-3 rounded-xl gradient-primary text-white font-semibold cursor-pointer border-0">
+                        <div className="flex flex-col gap-2 w-full max-w-sm">
+                            <div className="flex gap-2">
+                                <button onClick={handleDownload} className="flex-1 py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold cursor-pointer border-0 transition-all a11y-touch" aria-label="Print complaint receipt on thermal printer">
+                                    🖨️ Print Receipt (Thermal)
+                                </button>
+                                <button onClick={() => alert(`SMS sent to registered mobile for Ticket: ${ticketId}`)} className="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold cursor-pointer border-0 transition-all a11y-touch" aria-label="Send ticket via SMS">
+                                    📱 Send via SMS
+                                </button>
+                            </div>
+                            <button onClick={() => navigate('/')} className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white font-semibold cursor-pointer hover:bg-white/10 transition-all a11y-touch">
                                 🏠 Home
                             </button>
                         </div>

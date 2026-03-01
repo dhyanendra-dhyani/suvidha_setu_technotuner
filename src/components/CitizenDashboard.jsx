@@ -43,14 +43,20 @@ const familyMembers = [
 ];
 
 const availableServices = [
-    { label: 'Apply New Connection', labelHi: 'नया कनेक्शन', icon: '🆕', route: '/new-connection' },
-    { label: 'Name Change', labelHi: 'नाम बदलना', icon: '✏️', route: '/name-change' },
-    { label: 'Print Certificate', labelHi: 'प्रमाण पत्र', icon: '🖨️', route: '/documents' },
-    { label: 'Report Issue', labelHi: 'शिकायत', icon: '📝', route: '/complaint' },
-    { label: 'Land Records', labelHi: 'भूलेख', icon: '🗺️', route: '/bhulekh' },
-    { label: 'Tax Exemption', labelHi: 'टैक्स छूट', icon: '📋', route: '/municipal' },
-    { label: 'PM Schemes', labelHi: 'PM योजनाएं', icon: '🏛️', route: '/schemes' },
-    { label: 'FASTag', labelHi: 'FASTag', icon: '🚗', route: '/fastag' },
+    // ── Guest Services (inherited) ──
+    { label: 'Electricity Bill', labelHi: 'बिजली बिल', icon: '⚡', route: '/bill/electricity', type: 'guest' },
+    { label: 'Water Bill', labelHi: 'पानी बिल', icon: '💧', route: '/bill/water', type: 'guest' },
+    { label: 'Property Tax', labelHi: 'प्रॉपर्टी टैक्स', icon: '🏠', route: '/bill/property-tax', type: 'guest' },
+    { label: 'Cylinder Booking', labelHi: 'सिलेंडर बुकिंग', icon: '🛢️', route: '/gas-services', type: 'guest' },
+    { label: 'LPG Subsidy', labelHi: 'LPG सब्सिडी', icon: '💰', route: '/gas-services', type: 'guest' },
+    { label: 'File Complaint', labelHi: 'शिकायत', icon: '📝', route: '/complaint', type: 'guest' },
+    // ── Citizen-Exclusive ──
+    { label: 'New Connection', labelHi: 'नया कनेक्शन', icon: '🔌', route: '/new-connection', type: 'citizen' },
+    { label: 'Wrong Bill Dispute', labelHi: 'गलत बिल विवाद', icon: '📝', route: '/electricity-services', type: 'citizen' },
+    { label: 'Tax Exemption', labelHi: 'टैक्स छूट', icon: '📋', route: '/municipal', type: 'citizen' },
+    { label: 'Birth/Death Cert', labelHi: 'जन्म/मृत्यु प्रमाण', icon: '📜', route: '/documents', type: 'citizen' },
+    { label: 'New Gas Connection', labelHi: 'नया गैस कनेक्शन', icon: '🔧', route: '/gas-services', type: 'citizen' },
+    { label: 'Name Change', labelHi: 'नाम बदलना', icon: '✏️', route: '/name-change', type: 'citizen' },
 ];
 
 const statusColors = {

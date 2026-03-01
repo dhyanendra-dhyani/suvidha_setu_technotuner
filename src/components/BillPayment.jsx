@@ -389,27 +389,37 @@ export default function BillPayment({ lang, isOnline }) {
                 {/* ── STEP 4: SUCCESS ────────────── */}
                 {step === 'success' && (
                     <div className="flex flex-col items-center gap-5 py-4 fast-scale-in">
-                        <div className="w-24 h-24 rounded-full gradient-success flex items-center justify-center">
+                        <div className="w-24 h-24 rounded-full gradient-success flex items-center justify-center success-check">
                             <span className="text-white text-4xl">✓</span>
                         </div>
                         <div className="text-center">
                             <h3 className="text-2xl font-black text-green-400 mb-1">Payment Successful!</h3>
-                            <p className="text-white/50 font-mono text-sm">TXN: {txnId}</p>
+                            <p className="text-white/60 text-xs mb-1">Reference ID</p>
+                            <p className="text-white font-mono text-sm font-bold bg-white/5 inline-block px-3 py-1 rounded-lg">{txnId}</p>
                         </div>
                         <div className="glass-card rounded-2xl p-4 w-full max-w-sm text-sm space-y-1.5">
-                            <div className="flex justify-between"><span className="text-white/40">ID</span><span className="text-white font-mono">{consumerId}</span></div>
-                            <div className="flex justify-between"><span className="text-white/40">Name</span><span className="text-white">{bill?.name}</span></div>
-                            <div className="flex justify-between"><span className="text-white/40">Amount</span><span className="text-green-400 font-bold">₹{bill?.amount?.toLocaleString()}</span></div>
-                            <div className="flex justify-between"><span className="text-white/40">Method</span><span className="text-white capitalize">{payMethod}</span></div>
+                            <div className="flex justify-between"><span className="text-white/60">Consumer ID</span><span className="text-white font-mono">{consumerId}</span></div>
+                            <div className="flex justify-between"><span className="text-white/60">Name</span><span className="text-white">{bill?.name}</span></div>
+                            <div className="flex justify-between"><span className="text-white/60">Amount</span><span className="text-green-400 font-bold">₹{bill?.amount?.toLocaleString()}</span></div>
+                            <div className="flex justify-between"><span className="text-white/60">Method</span><span className="text-white capitalize">{payMethod}</span></div>
                         </div>
                         {!isOnline && (
                             <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-2 text-center">
                                 <p className="text-amber-400 text-sm font-semibold">📡 Saved offline — syncs later</p>
                             </div>
                         )}
-                        <div className="flex gap-3 w-full max-w-sm">
-                            <button onClick={handleDownload} className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white font-semibold cursor-pointer">📥 Receipt</button>
-                            <button onClick={() => navigate('/')} className="flex-1 py-3 rounded-xl gradient-primary text-white font-semibold cursor-pointer border-0">🏠 Home</button>
+                        <div className="flex flex-col gap-2 w-full max-w-sm">
+                            <div className="flex gap-2">
+                                <button onClick={handleDownload} className="flex-1 py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold cursor-pointer border-0 transition-all a11y-touch" aria-label="Print Receipt on thermal printer">
+                                    🖨️ Print Receipt (Thermal)
+                                </button>
+                                <button onClick={() => alert(`SMS sent to registered mobile for TXN: ${txnId}`)} className="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold cursor-pointer border-0 transition-all a11y-touch" aria-label="Send receipt via SMS">
+                                    📱 Send via SMS
+                                </button>
+                            </div>
+                            <button onClick={() => navigate('/')} className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white font-semibold cursor-pointer hover:bg-white/10 transition-all a11y-touch">
+                                🏠 Home
+                            </button>
                         </div>
                     </div>
                 )}
