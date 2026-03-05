@@ -877,6 +877,113 @@ body {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   WORKFLOW ANIMATIONS — OCR, Success Modal, Timeline
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── OCR Scanning Laser Line ──────────────────────── */
+@keyframes ocrScanLine {
+  0% {
+    top: 10%;
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  95% {
+    opacity: 1;
+  }
+
+  100% {
+    top: 88%;
+    opacity: 0;
+  }
+}
+
+.ocr-scan-line {
+  animation: ocrScanLine 2s ease-in-out infinite;
+}
+
+/* ── SVG Checkmark Draw ───────────────────────────── */
+@keyframes checkmarkDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ── Success Modal Backdrop ───────────────────────── */
+.success-modal-backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  animation: modalBackdropFade 0.2s ease-out;
+}
+
+@keyframes modalBackdropFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Tracking Timeline ────────────────────────────── */
+@keyframes timelineGrow {
+  from {
+    height: 0;
+  }
+
+  to {
+    height: 100%;
+  }
+}
+
+.timeline-line {
+  animation: timelineGrow 0.6s ease-out forwards;
+}
+
+@keyframes timelineDotPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.3);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.timeline-dot {
+  animation: timelineDotPop 0.3s ease-out forwards;
+}
+
+/* ── DigiLocker Shimmer ───────────────────────────── */
+@keyframes digiShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.digi-shimmer {
+  background: linear-gradient(90deg, #3B82F6 0%, #60A5FA 33%, #3B82F6 66%, #93C5FD 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: digiShimmer 2s linear infinite;
+}
+
 /* ── Prefers High Contrast ────────────────────────── */
 @media (prefers-contrast: more) {
   .glass-card {

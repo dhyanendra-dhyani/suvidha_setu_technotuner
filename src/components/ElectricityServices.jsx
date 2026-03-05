@@ -1,40 +1,141 @@
 /**
  * ═══════════════════════════════════════════════════════════
- * ElectricityServices — Expanded Electricity Portal
- * Meter reading, Smart meter, Complaints, Slab calculator
+ * ElectricityServices — Expanded Electricity Portal v2.0
+ * Meter reading (OCR), Smart meter, Complaints, Slab calculator
+ * Now with OCR Scanner, SuccessModal, DigiLocker, Evidence Upload
  * ═══════════════════════════════════════════════════════════
  */
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { electricitySlabRates, smartMeterData, meterReadingHistory } from '../utils/mockData';
+import OCRScanner from './OCRScanner';
+import SuccessModal from './SuccessModal';
 
-const SERVICES = [
-    { key: 'bill', label: 'Bill Payment (BBPS)', icon: '💳', desc: 'Pay via Consumer Number or QR', route: '/bill/electricity' },
-    { key: 'meter-reading', label: 'Meter Reading Submission', icon: '📸', desc: 'Submit photo or manual entry' },
-    { key: 'smart-meter', label: 'Smart Meter Recharge', icon: '⚡', desc: 'Prepaid balance top-up' },
-    { key: 'new-connection', label: 'New Connection', icon: '🔌', desc: 'Apply for new electricity', route: '/new-connection' },
-    { key: 'meter-fault', label: 'Meter Fault Complaint', icon: '🔧', desc: 'Report faulty / dead meter' },
-    { key: 'voltage', label: 'Voltage / Power Cut', icon: '⚠️', desc: 'Report fluctuation or outage' },
-    { key: 'dispute', label: 'Wrong Bill Dispute', icon: '📝', desc: 'Billing correction request' },
-    { key: 'slab-calc', label: 'Slab Rate Calculator', icon: '🧮', desc: 'Check tariff by consumption' },
+const ALL_SERVICES = [
+    { key: 'bill', label: 'Bill Payment (BBPS)', icon: '💳', desc: 'Pay via Consumer Number or QR', route: '/bill/electricity', mode: 'guest' },
+    { key: 'meter-reading', label: 'Meter Reading Submission', icon: '📸', desc: 'OCR scan or manual entry', mode: 'guest' },
+    { key: 'smart-meter', label: 'Smart Meter Recharge', icon: '⚡', desc: 'Prepaid balance top-up', mode: 'guest' },
+    { key: 'meter-fault', label: 'Power Cut / Meter Fault', icon: '🔧', desc: 'Report faulty meter or outage', mode: 'citizen' },
+    { key: 'voltage', label: 'Voltage Fluctuation', icon: '⚠️', desc: 'Report fluctuation or power cut', mode: 'citizen' },
+    { key: 'slab-calc', label: 'Slab Rate Calculator', icon: '🧮', desc: 'Check tariff by consumption', mode: 'guest' },
+    { key: 'dispute', label: 'Wrong Bill Dispute', icon: '📝', desc: 'Upload evidence & dispute', mode: 'citizen' },
+    { key: 'new-connection', label: 'New Connection', icon: '🔌', desc: 'Apply via DigiLocker / e-Pramaan', route: '/new-connection', mode: 'citizen' },
 ];
 
-export default function ElectricityServices({ lang }) {
+export default function ElectricityServices({ lang, isCitizen = false }) {
+    const SERVICES = isCitizen ? ALL_SERVICES : ALL_SERVICES.filter(s => s.mode === 'guest');
     const navigate = useNavigate();
     const [activeService, setActiveService] = useState(null);
     const [reading, setReading] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [rechargeAmt, setRechargeAmt] = useState('');
     const [recharged, setRecharged] = useState(false);
-    const [complaintFiled, setComplaintFiled] = useState(false);
     const [calcUnits, setCalcUnits] = useState('');
+    const [showOCR, setShowOCR] = useState(false);
+
+    // SuccessModal state
+    const [successModal, setSuccessModal] = useState(null);
+
+    // Complaint states
+    const [complaintIssue, setComplaintIssue] = useState('');
+    const [complaintDesc, setComplaintDesc] = useState('');
+
+    // Dispute states
+    const [disputeEvidence, setDisputeEvidence] = useState(null);
+    const [disputeDesc, setDisputeDesc] = useState('');
 
     const handleClick = (svc) => {
         if (svc.route) { navigate(svc.route); return; }
         setActiveService(svc.key);
-        setSubmitted(false); setRecharged(false); setComplaintFiled(false);
+        setSubmitted(false); setRecharged(false);
+        setShowOCR(false); setSuccessModal(null);
+        setComplaintIssue(''); setComplaintDesc('');
+        setDisputeEvidence(null); setDisputeDesc('');
     };
 
+    const genId = useCallback((prefix) => `${prefix}-${Date.now().toString(36).toUpperCase()}`, []);
+
+    // ── OCR scan complete handler ──
+    const handleOCRComplete = useCallback((val) => {
+        setReading(val.replace(/,/g, ''));
+        setShowOCR(false);
+        setSuccessModal({
+            title: 'System Logged',
+            refLabel: 'Acknowledgement ID',
+            refId: genId('ACK'),
+            subtitle: `Meter reading ${val} kWh recorded`,
+            details: [
+                { label: 'Reading', value: `${val} kWh` },
+                { label: 'Method', value: 'OCR Scan + Voice Confirm' },
+                { label: 'Date', value: new Date().toLocaleDateString('en-IN') },
+            ],
+            showPrint: false, showSMS: false,
+        });
+    }, [genId]);
+
+    // ── Submit manual reading ──
+    const handleManualSubmit = () => {
+        setSuccessModal({
+            title: 'System Logged',
+            refLabel: 'Acknowledgement ID',
+            refId: genId('ACK'),
+            subtitle: `Meter reading ${reading} kWh recorded`,
+            details: [
+                { label: 'Reading', value: `${reading} kWh` },
+                { label: 'Method', value: 'Manual Entry' },
+                { label: 'Date', value: new Date().toLocaleDateString('en-IN') },
+            ],
+            showPrint: false, showSMS: false,
+        });
+        setSubmitted(true);
+    };
+
+    // ── Submit complaint (power cut / meter fault) ──
+    const handleComplaintSubmit = () => {
+        const ticketId = genId('ELEC');
+        setSuccessModal({
+            title: 'Ticket Issued',
+            refLabel: 'Tracking Number',
+            refId: ticketId,
+            subtitle: 'Expected resolution within 48 hours',
+            details: [
+                { label: 'Category', value: SERVICES.find(s => s.key === activeService)?.label },
+                { label: 'Issue', value: complaintIssue || 'General' },
+                { label: 'Date', value: new Date().toLocaleDateString('en-IN') },
+            ],
+            showPrint: true, showSMS: true,
+        });
+    };
+
+    // ── Submit dispute ──
+    const handleDisputeSubmit = () => {
+        const refId = genId('DISP');
+        setSuccessModal({
+            title: 'Filed for Review',
+            refLabel: 'Reference Ticket',
+            refId,
+            subtitle: 'Your dispute has been registered for review',
+            details: [
+                { label: 'Category', value: 'Wrong Bill Dispute' },
+                { label: 'Evidence', value: disputeEvidence ? '📎 Attached' : 'None' },
+                { label: 'Date', value: new Date().toLocaleDateString('en-IN') },
+            ],
+            showPrint: true, showSMS: true,
+        });
+    };
+
+    // ── File upload handler ──
+    const handleEvidenceUpload = (e) => {
+        const file = e.target.files?.[0];
+        if (file) setDisputeEvidence(file.name);
+    };
+
+    // Complaint issue options
+    const complaintIssues = activeService === 'meter-fault'
+        ? ['Meter display blank', 'Meter not recording', 'Meter sparking', 'Meter damaged', 'Other']
+        : ['Power cut since 1+ hours', 'Frequent power cuts', 'Voltage fluctuation', 'Transformer issue', 'Other'];
+
+    // ── SERVICE LIST VIEW ──
     if (!activeService) {
         return (
             <div className="min-h-[calc(100vh-160px)] flex flex-col items-center px-4 py-6 fast-fade-in">
@@ -74,21 +175,36 @@ export default function ElectricityServices({ lang }) {
                     <h2 className="text-xl font-black text-white">{meta?.icon} {meta?.label}</h2>
                 </div>
 
+                {/* ── METER READING with OCR ──────────── */}
                 {activeService === 'meter-reading' && (
                     <div className="space-y-4">
-                        {!submitted ? (<>
-                            <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-                                <label className="text-white/60 text-sm mb-2 block">Enter Current Meter Reading</label>
-                                <input value={reading} onChange={e => setReading(e.target.value)} placeholder="e.g. 45763" type="number"
-                                    className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-amber-500/50 mb-3" />
-                                <button className="w-full py-3 rounded-xl bg-white/10 border border-dashed border-white/20 text-white/40 hover:text-white cursor-pointer transition-all mb-3">
-                                    📸 Upload Meter Photo (optional)
+                        {!submitted && !successModal ? (<>
+                            {/* Toggle OCR / Manual */}
+                            <div className="flex gap-2 mb-2">
+                                <button onClick={() => setShowOCR(true)}
+                                    className={`flex-1 py-3 rounded-xl font-bold cursor-pointer transition-all text-sm border ${showOCR ? 'bg-amber-500/20 border-amber-500/40 text-amber-400' : 'bg-white/5 border-white/10 text-white/60 hover:text-white'}`}>
+                                    📸 OCR Scan
                                 </button>
-                                <button onClick={() => setSubmitted(true)} disabled={!reading}
-                                    className="w-full py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold disabled:opacity-30 cursor-pointer transition-all">
-                                    Submit Reading
+                                <button onClick={() => setShowOCR(false)}
+                                    className={`flex-1 py-3 rounded-xl font-bold cursor-pointer transition-all text-sm border ${!showOCR ? 'bg-amber-500/20 border-amber-500/40 text-amber-400' : 'bg-white/5 border-white/10 text-white/60 hover:text-white'}`}>
+                                    ✏️ Manual Entry
                                 </button>
                             </div>
+
+                            {showOCR ? (
+                                <OCRScanner onScanComplete={handleOCRComplete} />
+                            ) : (
+                                <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                                    <label className="text-white/60 text-sm mb-2 block">Enter Current Meter Reading</label>
+                                    <input value={reading} onChange={e => setReading(e.target.value)} placeholder="e.g. 45763" type="number"
+                                        className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-amber-500/50 mb-3" />
+                                    <button onClick={handleManualSubmit} disabled={!reading}
+                                        className="w-full py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold disabled:opacity-30 cursor-pointer transition-all">
+                                        Submit Reading
+                                    </button>
+                                </div>
+                            )}
+
                             <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
                                 <p className="text-white font-bold mb-3">📋 Previous Readings</p>
                                 {meterReadingHistory.map((r, i) => (
@@ -98,17 +214,11 @@ export default function ElectricityServices({ lang }) {
                                     </div>
                                 ))}
                             </div>
-                        </>) : (
-                            <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-6 text-center fast-fade-in">
-                                <p className="text-green-400 text-5xl mb-3">✅</p>
-                                <p className="text-green-400 font-bold text-lg">Reading Submitted!</p>
-                                <p className="text-white/40 text-sm mt-2">Reading: {reading} kWh</p>
-                                <p className="text-white/30 text-xs mt-2">Your bill will be generated based on this reading</p>
-                            </div>
-                        )}
+                        </>) : null}
                     </div>
                 )}
 
+                {/* ── SMART METER ─────────────────────── */}
                 {activeService === 'smart-meter' && (
                     <div className="space-y-4">
                         <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-5">
@@ -129,50 +239,83 @@ export default function ElectricityServices({ lang }) {
                                         </button>
                                     ))}
                                 </div>
-                                <button onClick={() => setRecharged(true)} disabled={!rechargeAmt}
+                                <button onClick={() => {
+                                    setRecharged(true);
+                                    setSuccessModal({
+                                        title: 'Recharge Successful',
+                                        refLabel: 'Transaction ID',
+                                        refId: genId('SMRT'),
+                                        details: [
+                                            { label: 'Amount', value: `₹${rechargeAmt}` },
+                                            { label: 'New Balance', value: `₹${smartMeterData.currentBalance + Number(rechargeAmt)}` },
+                                        ],
+                                        showPrint: true, showSMS: true,
+                                    });
+                                }} disabled={!rechargeAmt}
                                     className="w-full py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold disabled:opacity-30 cursor-pointer transition-all">
                                     Recharge ₹{rechargeAmt || '0'}
                                 </button>
                             </div>
-                        ) : (
-                            <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-6 text-center fast-fade-in">
-                                <p className="text-green-400 text-5xl mb-3">✅</p>
-                                <p className="text-green-400 font-bold">Recharge Successful!</p>
-                                <p className="text-white/40 text-sm mt-1">₹{rechargeAmt} added to Smart Meter</p>
-                                <p className="text-white/30 text-xs mt-2">New Balance: ₹{smartMeterData.currentBalance + Number(rechargeAmt)}</p>
-                            </div>
-                        )}
+                        ) : null}
                     </div>
                 )}
 
-                {(activeService === 'meter-fault' || activeService === 'voltage' || activeService === 'dispute') && (
+                {/* ── POWER CUT / METER FAULT ────────── */}
+                {(activeService === 'meter-fault' || activeService === 'voltage') && !successModal && (
                     <div className="space-y-4">
-                        {!complaintFiled ? (<>
-                            <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-                                <label className="text-white/60 text-sm mb-2 block">Consumer Number</label>
-                                <input placeholder="PSEB-XXXXXX" className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-red-500/50 mb-3" />
-                                <label className="text-white/60 text-sm mb-2 block">Describe the issue</label>
-                                <textarea rows={3} placeholder={activeService === 'meter-fault' ? 'e.g. Meter display is blank' : activeService === 'voltage' ? 'e.g. Frequent power cuts since 3 days' : 'e.g. Bill shows 500 units but actual usage is 200'}
-                                    className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none resize-none mb-3" />
-                                <button className="w-full py-3 rounded-xl bg-white/10 border border-dashed border-white/20 text-white/40 hover:text-white cursor-pointer transition-all mb-3">
-                                    📸 Attach Photo (optional)
-                                </button>
-                                <button onClick={() => setComplaintFiled(true)}
-                                    className="w-full py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold cursor-pointer transition-all">
-                                    Submit Complaint
-                                </button>
+                        <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                            <label className="text-white/60 text-sm mb-2 block">Select Issue</label>
+                            <div className="grid gap-2 mb-4">
+                                {complaintIssues.map(issue => (
+                                    <button key={issue} onClick={() => setComplaintIssue(issue)}
+                                        className={`w-full text-left p-3 rounded-xl border cursor-pointer transition-all text-sm ${complaintIssue === issue
+                                            ? 'bg-red-500/15 border-red-500/40 text-red-300'
+                                            : 'bg-white/5 border-white/10 text-white/60 hover:text-white hover:border-white/20'
+                                            }`}>
+                                        {issue}
+                                    </button>
+                                ))}
                             </div>
-                        </>) : (
-                            <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-6 text-center fast-fade-in">
-                                <p className="text-green-400 text-5xl mb-3">✅</p>
-                                <p className="text-green-400 font-bold text-lg">Complaint Filed!</p>
-                                <p className="text-white/40 text-sm mt-2">Ticket: ELEC-{Date.now().toString(36).toUpperCase()}</p>
-                                <p className="text-white/30 text-xs mt-2">Expected resolution within 48 hours</p>
-                            </div>
-                        )}
+                            <label className="text-white/60 text-sm mb-2 block">Consumer Number</label>
+                            <input placeholder="PSEB-XXXXXX" className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-red-500/50 mb-3" />
+                            <label className="text-white/60 text-sm mb-2 block">Additional Details (optional)</label>
+                            <textarea rows={2} value={complaintDesc} onChange={e => setComplaintDesc(e.target.value)}
+                                placeholder="Describe the problem..."
+                                className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none resize-none mb-3" />
+                            <button onClick={handleComplaintSubmit} disabled={!complaintIssue}
+                                className="w-full py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold disabled:opacity-30 cursor-pointer transition-all">
+                                Submit Complaint
+                            </button>
+                        </div>
                     </div>
                 )}
 
+                {/* ── WRONG BILL DISPUTE ─────────────── */}
+                {activeService === 'dispute' && !successModal && (
+                    <div className="space-y-4">
+                        <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                            <label className="text-white/60 text-sm mb-2 block">Consumer Number</label>
+                            <input placeholder="PSEB-XXXXXX" className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-amber-500/50 mb-3" />
+                            <label className="text-white/60 text-sm mb-2 block">Describe the discrepancy</label>
+                            <textarea rows={3} value={disputeDesc} onChange={e => setDisputeDesc(e.target.value)}
+                                placeholder="e.g. Bill shows 500 units but actual usage is 200"
+                                className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none resize-none mb-3" />
+
+                            {/* Upload Evidence */}
+                            <label className="w-full py-3 rounded-xl bg-white/10 border border-dashed border-white/20 text-white/40 hover:text-white cursor-pointer transition-all mb-3 flex items-center justify-center gap-2 text-sm">
+                                <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleEvidenceUpload} />
+                                📎 Upload Evidence {disputeEvidence && <span className="text-green-400 font-bold">✓ {disputeEvidence}</span>}
+                            </label>
+
+                            <button onClick={handleDisputeSubmit}
+                                className="w-full py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold cursor-pointer transition-all">
+                                Submit Dispute
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* ── SLAB CALCULATOR ─────────────────── */}
                 {activeService === 'slab-calc' && (
                     <div className="space-y-4">
                         <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
@@ -203,6 +346,15 @@ export default function ElectricityServices({ lang }) {
                     </div>
                 )}
             </div>
+
+            {/* ── SUCCESS MODAL ───────────────────── */}
+            {successModal && (
+                <SuccessModal
+                    {...successModal}
+                    onHome={() => navigate('/')}
+                    onClose={() => { setSuccessModal(null); setActiveService(null); }}
+                />
+            )}
         </div>
     );
 }

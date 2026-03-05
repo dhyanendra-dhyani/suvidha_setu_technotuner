@@ -33,6 +33,7 @@ const ElectricityServices = lazy(() => import('./components/ElectricityServices'
 const MunicipalServices = lazy(() => import('./components/MunicipalServices'));
 const FASTagRecharge = lazy(() => import('./components/FASTagRecharge'));
 const Bhulekh = lazy(() => import('./components/Bhulekh'));
+const WaterServices = lazy(() => import('./components/WaterServices'));
 import VoiceAgent from './components/VoiceAgent'; // Direct import — must be ready immediately
 
 function Loader() {
@@ -257,12 +258,13 @@ function AppContent() {
                     <Route path="/schemes" element={<GovSchemes lang={lang} />} />
                     <Route path="/documents/:docType" element={<DocumentServices lang={lang} />} />
                     <Route path="/documents" element={<DocumentServices lang={lang} />} />
-                    <Route path="/gas-services" element={<GasServices lang={lang} />} />
-                    <Route path="/electricity-services" element={<ElectricityServices lang={lang} />} />
-                    <Route path="/municipal/:serviceType" element={<MunicipalServices lang={lang} />} />
-                    <Route path="/municipal" element={<MunicipalServices lang={lang} />} />
+                    <Route path="/gas-services" element={<GasServices lang={lang} isCitizen={!!citizen} />} />
+                    <Route path="/electricity-services" element={<ElectricityServices lang={lang} isCitizen={!!citizen} />} />
+                    <Route path="/municipal/:serviceType" element={<MunicipalServices lang={lang} isCitizen={!!citizen} />} />
+                    <Route path="/municipal" element={<MunicipalServices lang={lang} isCitizen={!!citizen} />} />
                     <Route path="/fastag" element={<FASTagRecharge lang={lang} />} />
                     <Route path="/bhulekh" element={<Bhulekh lang={lang} />} />
+                    <Route path="/water-services" element={<WaterServices lang={lang} isCitizen={!!citizen} />} />
                     <Route path="/admin" element={<AdminDashboard lang={lang} />} />
                   </Routes>
                 </main>

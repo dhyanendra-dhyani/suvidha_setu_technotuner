@@ -24,6 +24,7 @@ const SERVICE_META_NOEM = {
     electricity: { icon: 'E', label: 'Electricity Bill', color: '#FBBF24' },
     water: { icon: 'W', label: 'Water Bill', color: '#3B82F6' },
     gas: { icon: 'G', label: 'Gas Bill', color: '#F97316' },
+    'property-tax': { icon: 'P', label: 'Property Tax', color: '#8B5CF6' },
 };
 
 function maskName(name) {
@@ -58,7 +59,7 @@ function getOrGenerateBill(consumerId, serviceType) {
     const fakeName = fakeNames[Math.floor(Math.random() * fakeNames.length)];
     const amount = Math.floor(Math.random() * 2000) + 200;
     const units = Math.floor(Math.random() * 200) + 10;
-    const unitLabels = { electricity: 'kWh', water: 'KL', gas: 'Cylinders' };
+    const unitLabels = { electricity: 'kWh', water: 'KL', gas: 'Cylinders', 'property-tax': 'Sq.ft' };
 
     return {
         id: consumerId, service: serviceType, name: maskName(fakeName), fullName: fakeName, amount, units,
@@ -270,7 +271,7 @@ export default function BillPayment({ lang, isOnline }) {
                 {step === 'input' && (
                     <div className="space-y-4 fast-fade-in">
                         <div className="glass-card rounded-2xl p-5">
-                            <label className="text-white/50 text-sm font-semibold block mb-2">Consumer Number</label>
+                            <label className="text-white/50 text-sm font-semibold block mb-2">{serviceType === 'property-tax' ? 'Property ID / House Number' : 'Consumer Number'}</label>
                             <input readOnly value={consumerId} placeholder="Enter any number..."
                                 className="w-full bg-white/5 border border-white/10 rounded-xl text-white text-xl font-mono p-3 focus:border-indigo-500 outline-none" />
                             <p className="text-white/20 text-xs mt-2">✨ Prototype: any number accepted</p>
@@ -306,11 +307,11 @@ export default function BillPayment({ lang, isOnline }) {
                                 </div>
                             </div>
                             <div className="flex justify-between mb-3">
-                                <span className="text-white/40 text-sm">Meter</span>
+                                <span className="text-white/40 text-sm">{serviceType === 'property-tax' ? 'Property ID' : 'Meter'}</span>
                                 <span className="text-white/70 font-mono text-sm">{bill.meterNo}</span>
                             </div>
                             <div className="flex justify-between mb-3">
-                                <span className="text-white/40 text-sm">Usage</span>
+                                <span className="text-white/40 text-sm">{serviceType === 'property-tax' ? 'Area' : 'Usage'}</span>
                                 <span className="text-white/70">{bill.units} {bill.unitLabel}</span>
                             </div>
                             <div className="flex justify-between mb-3">
